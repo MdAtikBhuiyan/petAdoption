@@ -1,0 +1,116 @@
+/* font import */
+
+/* nunito */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap');
+
+/* popins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+
+
+/* tailwind css add */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.font-title {
+    font-family: 'Nunito', sans-serif;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+/*   */
+.dark {
+    background-color: black;
+}
+
+
+/* dark mode light mode */
+
+[data-theme='light'] {
+    --primary-text: #000;
+    --secondary-text: #747474;
+    --title-primary: #0a303a;
+    --title-secondary: #f04336;
+    --title-optioanl: #0a303a;
+
+    --theme-bg: #fff;
+    --bg: #000;
+    --primary-bg: #f04336;
+    --secondary-bg: #0a303a;
+
+    --navbar-text: #1e4b57;
+}
+
+[data-theme='dark'] {
+    --primary-text: #fff;
+    --secondary-text: #dbdada;
+    --title-primary: #0a303a;
+    --title-secondary: #f04336;
+    --title-optioanl: #fff;
+
+    --theme-bg: #000;
+    --bg: #fff;
+    --primary-bg: #f04336;
+    --secondary-bg: #0a303a;
+
+    --navbar-text: #1e4b57;
+}
+
+
+
+/* navbar */
+
+nav li a {
+    padding: 10px 20px;
+}
+
+nav li a:hover {
+    background: var(--primary-bg);
+    color: #fff;
+    padding: 10px 20px;
+    /* border-radius: 10px 10px 30px 30px; */
+    clip-path: polygon(0 0, 100% 0, 91% 100%, 9% 100%);
+    border-radius: 10px 10px 20px 20px;
+}
+
+nav li a.active {
+    background: var(--primary-bg);
+    color: #fff;
+    padding: 10px 20px;
+    /* border-radius: 10px 10px 30px 30px; */
+    clip-path: polygon(0 0, 100% 0, 91% 100%, 9% 100%);
+    border-radius: 10px 10px 20px 20px;
+}
+
+
+.text-shape {
+    background: var(--primary-bg);
+    color: #fff;
+    /* padding: 10px 20px; */
+    /* border-radius: 10px 10px 30px 30px; */
+    padding: 0 24px;
+    clip-path: polygon(0 0, 100% 0, 91% 100%, 9% 100%);
+    border-radius: 10px 10px 20px 20px;
+}
+
+
+
+/* animation */
+@keyframes shake {
+    0% {
+        -webkit-transform: rotate(15deg);
+        transform: rotate(15deg);
+    }
+
+    50% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(15deg);
+        transform: rotate(15deg);
+    }
+}
