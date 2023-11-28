@@ -1,14 +1,99 @@
 import bannerImg from '../../../public/images/login.png'
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa6";
+import useAuth from '../../hooks/useAuth';
+import { useForm } from 'react-hook-form';
+import useAxiosPublic from '../../hooks/useAxiosPublic';
+import { toast } from 'react-toastify';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import SocialLogin from '../../components/SocialLogin/SocialLogin';
+
+
+const img_hosting_key = '6a80da543bb68bd15c9684b27eb2988d';
+const img_hosting_api = `https://api.imgbb.com/1/upload?expiration=600&key=${img_hosting_key}`
 
 const Register = () => {
 
-    const handleSubmitRegister = (e) => {
+    const { signUp, googleSignIn, updateUserProfile } = useAuth()
+    const axiosPublic = useAxiosPublic()
 
-        e.preventDefault()
+    // const [errorMessage, setErrorMessage] = useState('')
+    const navigate = useNavigate()
 
 
+    // handle registration form
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm()
+
+    const onSubmit = async (data) => {
+
+        // image hosting
+        const photo = {
+            image: data?.photo[0]
+        }
+        const res = await axiosPublic.post(img_hosting_api, photo, {
+            headers: {
+                "content-type": "multipart/form-data"
+            }
+        })
+
+        const photoUrl = res.data?.data?.display_url;
+        // console.log(res.data, photoUrl);
+
+        // create an account at firebase and send user to database
+        if (res.data?.success) {
+
+            signUp(data.email, data.password)
+                .then(res => {
+                    // console.log(res);
+                    // add name and phot
+                    updateUserProfile(data.name, photoUrl)
+                        .then(() => {
+                            // console.log("user updated succesfully");
+
+                            // create user entry for database
+                            const userInfo = {
+                                name: data.name,
+                                email: data.email,
+                                role: 'user'
+                            }
+                            axiosPublic.post('/users', userInfo)
+                                .then(res => {
+                                    console.log(res.data);
+                                    if (res.data?.insertedId) {
+                                        navigate('/')
+                                        toast.success("Login successfully !", {
+                                            position: toast.POSITION.TOP_RIGHT
+                                        });
+                                    }
+                                })
+                                .catch(err => {
+                                    toast.error(`Oppss...${err.message}`, {
+                                        position: toast.POSITION.TOP_RIGHT
+                                    });
+                                })
+
+                        })
+                        .catch(err => {
+                            toast.error(`Oppss...${err.message}`, {
+                                position: toast.POSITION.TOP_RIGHT
+                            });
+                        })
+                })
+                .catch(err => {
+                    toast.error(`Oppss...${err.message}`, {
+                        position: toast.POSITION.TOP_RIGHT
+                    });
+                })
+
+
+        }
+        // reset()
     }
 
 
@@ -42,54 +127,58 @@ const Register = () => {
                             <div className="max-w-lg lg:pt-2 2xl:pt-4 lg:pb-8 mx-auto 2xl:mr-0">
                                 <h3 className="text-5xl sm:text-6xl text-title-optioanl font-bold mb-10">SIgn Up</h3>
 
-                                <div className="flex flex-wrap mb-6 items-center -mx-2">
-                                    <div className="w-full md:w-1/2 px-2 mb-3 md:mb-0">
-                                        <a className="inline-flex w-full py-3 px-4 items-center justify-center rounded-full border border-gray-200 hover:border-gray-400 transition-all duration-100 hover:bg-secondary-bg group" href="#">
-                                            <FcGoogle className='text-3xl' />
-                                            <span className="ml-4 text-sm font-semibold text-gray-500 group-hover:text-white">Login with Google</span>
-                                        </a>
-                                    </div>
-                                    <div className="w-full md:w-1/2 px-2">
-                                        <a className="inline-flex w-full py-3 px-4 items-center justify-center rounded-full border border-gray-200 hover:border-gray-400 transition-all duration-100 hover:bg-secondary-bg group" href="#">
-                                            <FaGithub className='text-3xl' />
-                                            <span className="ml-4 text-sm font-semibold text-gray-500 group-hover:text-white">Login with GitHub</span>
-                                        </a>
-                                    </div>
-                                </div>
+                                <SocialLogin />
+
                                 <div className="flex mb-6 items-center">
                                     <div className="w-full h-px bg-gray-300"></div>
                                     <span className="mx-4 text-sm font-semibold text-gray-500">Or</span>
                                     <div className="w-full h-px bg-gray-300"></div>
                                 </div>
 
-                                <form onSubmit={handleSubmitRegister}>
+                                {/* form */}
+                                <form onSubmit={handleSubmit(onSubmit)}>
                                     <div className="mb-6">
                                         <label className="block mb-1.5 text-sm font-semibold text-title-optioanl" >Name</label>
                                         <input
                                             name='name'
+                                            {...register("name", { required: true })}
                                             className="w-full py-3 px-4 text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-transparent focus:outline-0 focus:shadow-none rounded-lg "
                                             type="text"
                                             placeholder="Enter email" />
+                                        {errors.name && <span className="text-red-600">Name is required</span>}
                                     </div>
                                     <div className="mb-6">
                                         <label className="block mb-1.5 text-sm font-semibold text-title-optioanl" >Email</label>
                                         <input
                                             name='email'
+                                            {...register("email", { required: true })}
                                             className="w-full py-3 px-4 text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-transparent focus:outline-0 focus:shadow-none rounded-lg "
                                             type="email"
                                             placeholder="Enter email" />
+                                        {errors.email && <span className="text-red-600">Email is required</span>}
                                     </div>
                                     <div className="mb-7">
                                         <label className="block mb-1.5 text-sm font-semibold text-title-optioanl" >Password</label>
                                         <input
                                             name='password'
+                                            {...register('password', {
+                                                required: true,
+                                                minLength: 6,
+                                                maxLength: 20,
+                                                pattern: /^(?=.*[A-Z])(?=.*[\W_])(?=.*[a-z])/
+
+                                            })}
                                             className="w-full py-3 px-4 text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-transparent focus:outline-0 focus:shadow-none rounded-lg "
                                             type="password"
                                             placeholder="Enter password" />
+                                        {errors.password?.type === 'required' && <span className="text-red-600">Password is required</span>}
+                                        {errors.password?.type === 'minLength' && <span className="text-red-600">Password must be 6 character</span>}
+                                        {errors.password?.type === 'maxLength' && <span className="text-red-600">Password less than or equal 20 character</span>}
+                                        {errors.password?.type === 'pattern' && <span className="text-red-600">Password must be 1 uppercase, lowercase and special character</span>}
                                     </div>
 
 
-                                    <div className="flex items-center justify-center w-full mb-8">
+                                    <div className="w-full mb-8">
                                         <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-fit border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                                             <div className="flex flex-col items-center justify-center pt-2 pb-4">
                                                 <svg className="w-6 h-6 mb-2 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
@@ -98,15 +187,18 @@ const Register = () => {
                                                 <p className="mb-1 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload photo</span></p>
                                                 <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or JPEG </p>
                                             </div>
-                                            <input id="dropzone-file" type="file" className="max-w-[220px] pb-2" />
+                                            <input
+                                                {...register("photo", { required: true })}
+                                                id="dropzone-file" type="file" className="max-w-[220px] pb-2" />
                                         </label>
+                                        {errors.photo && <span className="text-red-600">Photo selecting is required</span>}
                                     </div>
 
 
                                     <button
                                         className="relative group block w-full py-3 px-5 text-center text-base font-semibold font-title text-orange-50 bg-secondary-bg rounded-full overflow-hidden hover:bg-primary-bg transition-all"
                                         type="submit">
-                                        Login
+                                        Sign Up
                                     </button>
 
                                 </form>
@@ -114,7 +206,9 @@ const Register = () => {
                                 <div className="text-center mt-8">
                                     <span className="text-sm font-semibold text-title-optioanl">
                                         <span>Already have an account?</span>
-                                        <a className="inline-block ml-1 text-title-secondary italic text-base hover:underline" href="#">Sign in</a>
+                                        <Link to='/login'>
+                                            <span className='inline-block ml-1 text-title-secondary italic text-base hover:underline'>Sign in</span>
+                                        </Link>
                                     </span>
                                 </div>
 

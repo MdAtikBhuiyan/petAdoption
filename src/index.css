@@ -63,22 +63,21 @@ body {
 /* navbar */
 
 nav li a {
-    padding: 10px 20px;
+    padding: 8px 16px;
+    /* font-size: 14px; */
 }
 
-nav li a:hover {
+nav .navItem li a:hover {
     background: var(--primary-bg);
     color: #fff;
-    padding: 10px 20px;
     /* border-radius: 10px 10px 30px 30px; */
     clip-path: polygon(0 0, 100% 0, 91% 100%, 9% 100%);
     border-radius: 10px 10px 20px 20px;
 }
 
-nav li a.active {
+nav .navItem li a.active {
     background: var(--primary-bg);
     color: #fff;
-    padding: 10px 20px;
     /* border-radius: 10px 10px 30px 30px; */
     clip-path: polygon(0 0, 100% 0, 91% 100%, 9% 100%);
     border-radius: 10px 10px 20px 20px;
@@ -94,6 +93,31 @@ nav li a.active {
     clip-path: polygon(0 0, 100% 0, 91% 100%, 9% 100%);
     border-radius: 10px 10px 20px 20px;
 }
+
+
+/* dashboard sidebar */
+.css-1wvake5 {
+    min-width: 240px !important;
+    width: 240px !important;
+    border: none !important;
+}
+
+.css-1wvake5.ps-broken {
+    position: relative;
+    top: auto !important;
+}
+
+.css-1t8x7v1>.ps-menu-button:hover {
+    color: var(--title-secondary);
+}
+
+.dashboard-sidebar li a.active {
+    background-color: white;
+    color: var(--title-secondary);
+}
+
+
+
 
 
 
