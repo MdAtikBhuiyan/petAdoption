@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useDonationCamp from '../../../../hooks/useDonationCamp';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
@@ -7,12 +7,22 @@ import { FaRegEdit, FaUsers } from 'react-icons/fa';
 import { MdOutlineMotionPhotosPause } from 'react-icons/md';
 import { RiDeleteBin5Fill } from 'react-icons/ri';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
+import { useState } from 'react';
+import { Line, Circle } from 'rc-progress';
 
 const AllDonationTable = ({ serial, donationCamp }) => {
-    const { petName, maxDonation, lastDate, dCampShortDes, dCampLongDes, dCampImg, pauseStatus, _id } = donationCamp || {};
+    const { petName, maxDonation, lastDate, dCampShortDes, dCampLongDes, dCampImg, donatedAmount, pauseStatus, _id } = donationCamp || {};
 
     const axiosSecure = useAxiosSecure()
     const [, , refetch] = useDonationCamp()
+
+    const [progressPercent, setProgressPercent] = useState(0)
+
+    useEffect(() => {
+        const completionPercentage = (donatedAmount / maxDonation) * 100;
+        setProgressPercent(completionPercentage)
+    }, [maxDonation, donatedAmount])
+
 
     const handlePauseStatus = () => {
 
@@ -96,7 +106,7 @@ const AllDonationTable = ({ serial, donationCamp }) => {
                 <img className="w-14 h-14 rounded-full" src={dCampImg} alt="Jese image" />
             </th>
             <td className="px-6 py-4">
-                progess will be added
+            <Line percent={progressPercent} strokeWidth={4} strokeColor="#0a303a" trailWidth={3} />
             </td>
             <td className="px-6 py-4 text-xs">
 

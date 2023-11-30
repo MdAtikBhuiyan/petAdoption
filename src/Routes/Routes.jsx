@@ -27,12 +27,13 @@ import AdoptionRequest from "../pages/Dashboard/UserDashboard/AdoptionRequest/Ad
 import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
 import AboutUs from "../pages/Home/AboutUs/AboutUs";
+import ErrorPage from "../pages/ErrorPage/ErrorPage";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <Main />,
-        errorElement: "hello eror",
+        errorElement: <ErrorPage />,
         children: [
             {
                 path: '/',
@@ -85,7 +86,7 @@ const router = createBrowserRouter([
         element: <PrivateRoute>
             <Dashboard />
         </PrivateRoute>,
-        errorElement: 'hello error',
+        errorElement: <ErrorPage />,
         children: [
 
             // user

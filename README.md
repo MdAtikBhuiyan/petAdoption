@@ -1,8 +1,21 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+# Pet Adoption
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## Live Link
+
+https://asn-pet-adoption-12.web.app/
+
+
+## Key Features:
+
+- Pet Adoption is a library management based website
+- It has login logout and firebasse authantication system
+- User can see their name, profile picture after login with a logout option
+- There are some private route, without login user won't be able to access to send adopt request and can't donate to the campaigns.
+- There is a added database, borrowed books, all category books all are store in database
+- Here user can add, update to pet and campaign by their dashboard 
+- user can see thir pet deatils, campaign details 
+- User can also login by using google, github, and email, password.
+- there has some validation of password for more

@@ -57,64 +57,68 @@ const MyDonation = () => {
 
     return (
         <div>
-            <div className="text-center">
-                <SectionTitle subHeading={'Donation'} heading={"My All Donations"} darkMode={true} />
-            </div>
+
 
 
             {
                 myDonations.length ?
 
-                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-12">
-                        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3">
-                                        Pet Image
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Pet Name
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Donated Amount
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Ask For Refund
-                                    </th>
+                    <>
+                        <div className="text-center">
+                            <SectionTitle subHeading={'Donation'} heading={"My All Donations"} darkMode={true} />
+                        </div>
 
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-12">
+                            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" className="px-6 py-3">
+                                            Pet Image
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            Pet Name
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            Donated Amount
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            Ask For Refund
+                                        </th>
 
-                                {
-                                    myDonations?.map(donation => (
-                                        <tr
-                                            key={donation._id}
-                                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                                            <td className="px-6 py-4">
-                                                <img className="w-14 h-14 rounded-full" src={donation?.donationCamps?.dCampImg} alt="Jese image" />
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {donation?.donationCamps?.petName}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {donation?.donatedAmount}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <button
-                                                    onClick={() => handleRefundDonation(donation?._id)}
-                                                    className="flex gap-2 items-center text-title-primary text-sm font-bold">
-                                                    Refund  <HiMiniReceiptRefund className="text-title-secondary text-xl" />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
+                                    {
+                                        myDonations?.map(donation => (
+                                            <tr
+                                                key={donation._id}
+                                                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
 
-                            </tbody>
-                        </table>
-                    </div>
+                                                <td className="px-6 py-4">
+                                                    <img className="w-14 h-14 rounded-full" src={donation?.donationCamps?.dCampImg} alt="Jese image" />
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {donation?.donationCamps?.petName}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {donation?.donatedAmount}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <button
+                                                        onClick={() => handleRefundDonation(donation?._id)}
+                                                        className="flex gap-2 items-center text-title-primary text-sm font-bold">
+                                                        Refund  <HiMiniReceiptRefund className="text-title-secondary text-xl" />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </>
                     :
                     <div className="text-center">
                         <h3 className="text-title-secondary text-4xl font-extrabold font-title">Have not any Donation</h3>

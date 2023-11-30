@@ -8,6 +8,9 @@ import {
 } from '@tanstack/react-table'
 import TableCard from "./TableCard";
 import useAllPet from "../../../../hooks/useAllPet";
+import { useState } from "react";
+import { useEffect } from "react";
+import useAuth from "../../../../hooks/useAuth";
 
 
 
@@ -49,16 +52,21 @@ const columns = [
 const MyAddedPet = () => {
 
 
+    const { user, isLoading } = useAuth()
+    const [myPets, setMyPets] = useState([])
 
-    const [allPets, refetch] = useAllPet()
+    const [allPets, , refetch] = useAllPet()
 
-    console.log(allPets);
+    console.log(myPets);
+    useEffect(() => {
+        if (user) {
+            const mine = allPets?.filter(pet => pet.ownerEmail == user?.email)
+            setMyPets(mine)
+            refetch()
+        }
 
-    const table = useReactTable({
-        allPets,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-    })
+    }, [allPets, user, refetch])
+
 
 
 
@@ -97,7 +105,7 @@ const MyAddedPet = () => {
                     </thead>
                     <tbody>
                         {
-                            allPets?.map((pet, idx) => <TableCard key={pet._id} pet={pet} serial={idx} />)
+                            myPets?.map((pet, idx) => <TableCard key={pet._id} pet={pet} serial={idx} />)
                         }
 
                     </tbody>

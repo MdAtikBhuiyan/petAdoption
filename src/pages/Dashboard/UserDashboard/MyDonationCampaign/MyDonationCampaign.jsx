@@ -1,11 +1,27 @@
+import { useEffect } from "react";
 import SectionTitle from "../../../../components/sectionTitle/sectionTitle";
 import useDonationCamp from "../../../../hooks/useDonationCamp";
 import CampTableCard from "./CampTableCard";
 import { FaPause } from "react-icons/fa6";
+import { useState } from "react";
+import useAuth from "../../../../hooks/useAuth";
 
 const MyDonationCampaign = () => {
 
+    const { user } = useAuth()
     const [donationCamps, isLoading, refetch] = useDonationCamp()
+
+    const [myDonation, setMydonation] = useState([])
+    console.log("my",myDonation);
+
+    useEffect(() => {
+        if (user) {
+            const mine = donationCamps?.filter(pet => pet.creatorEmail == user?.email)
+            setMydonation(mine)
+            refetch()
+        }
+
+    }, [donationCamps, user, refetch])
 
 
     return (
@@ -44,7 +60,7 @@ const MyDonationCampaign = () => {
                     </thead>
                     <tbody>
                         {
-                            donationCamps?.map((camp, idx) => <CampTableCard key={camp._id} donationCamp={camp} serial={idx} />)
+                            myDonation?.map((camp, idx) => <CampTableCard key={camp._id} donationCamp={camp} serial={idx} />)
                         }
 
                     </tbody>
