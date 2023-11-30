@@ -148,7 +148,7 @@ const PetLists = () => {
                                 <div className="flex items-center">
 
                                     <h3 className="text-title-secondary text-lg font-bold">
-                                        This category is not available,  Coming Soon...
+                                        This category is not available...
                                     </h3>
                                 </div>
                         }
