@@ -16,8 +16,8 @@ const Login = () => {
 
     const navigate = useNavigate();
     const location = useLocation()
-    console.log("login", location);
-
+    // console.log("login", location);
+    const path = location.state?.from || '/';
 
     const {
         register,
@@ -34,7 +34,7 @@ const Login = () => {
                 toast.success("Login successfully !", {
                     position: toast.POSITION.TOP_RIGHT
                 });
-
+                navigate(path, { replace: true })
             })
 
     }
@@ -130,7 +130,7 @@ const Login = () => {
                                     <span className="text-sm font-semibold text-title-optioanl">
                                         <span>Don’t have an account?</span>
                                         <Link to='/register'>
-                                            <span className='inline-block ml-1 text-title-secondary italic text-base hover:underline'>Sign in</span>
+                                            <span className='inline-block ml-1 text-title-secondary italic text-base hover:underline'>Sign Up</span>
                                         </Link>
                                     </span>
                                 </div>

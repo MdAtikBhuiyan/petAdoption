@@ -3,8 +3,12 @@ import Navbars from "../pages/shared/Navbar/Navbars";
 import { useState } from "react";
 import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { FaBars } from "react-icons/fa6";
+import useAdmin from "../hooks/useAdmin";
 
 const Dashboard = () => {
+
+    const [isAdmin, isAdminLoading] = useAdmin()
+
 
     const [showMenu, setShowMenu] = useState(true)
     console.log(showMenu);
@@ -14,24 +18,68 @@ const Dashboard = () => {
 
     const navLinks = <>
 
-        <MenuItem component={<NavLink to='/dashboard/addPet' />}>
-            Add a pet
-        </MenuItem>
-        <MenuItem component={<NavLink to='/dashboard/myAddedPet' />}>
-            My Added Pet
-        </MenuItem>
-        <MenuItem component={<NavLink to='/dashboard/adoptRequest' />}>
-            Adoption Request
-        </MenuItem>
-        <MenuItem component={<NavLink to='/dashboard/createDonationCamp' />}>
-            Create Donation Campaign
-        </MenuItem>
-        <MenuItem component={<NavLink to='/dashboard/myDonationCamp' />}>
-            My Donation Campaigns
-        </MenuItem>
-        <MenuItem component={<NavLink to='/dashboard/myDonation' />}>
-            My Donations
-        </MenuItem>
+
+        {
+
+            isAdmin ?
+
+                <>
+                    <MenuItem component={<NavLink to='/dashboard/addPet' />}>
+                        Add a pet
+                    </MenuItem>
+                    <MenuItem component={<NavLink to='/dashboard/myAddedPet' />}>
+                        My Added Pet
+                    </MenuItem>
+                    <MenuItem component={<NavLink to='/dashboard/adoptRequest' />}>
+                        Adoption Request
+                    </MenuItem>
+                    <MenuItem component={<NavLink to='/dashboard/createDonationCamp' />}>
+                        Create Donation Campaign
+                    </MenuItem>
+                    <MenuItem component={<NavLink to='/dashboard/myDonationCamp' />}>
+                        My Donation Campaigns
+                    </MenuItem>
+                    <MenuItem component={<NavLink to='/dashboard/myDonation' />}>
+                        My Donations
+                    </MenuItem>
+                    <MenuItem component={<NavLink to='/dashboard/users' />}>
+                        Users
+                    </MenuItem>
+                    <MenuItem component={<NavLink to='/dashboard/allPets' />}>
+                        All Pets
+                    </MenuItem>
+                    <MenuItem component={<NavLink to='/dashboard/allDonations' />}>
+                        All Donations
+                    </MenuItem>
+
+                </>
+
+                :
+
+                <>
+                    <MenuItem component={<NavLink to='/dashboard/addPet' />}>
+                        Add a pet
+                    </MenuItem>
+                    <MenuItem component={<NavLink to='/dashboard/myAddedPet' />}>
+                        My Added Pet
+                    </MenuItem>
+                    <MenuItem component={<NavLink to='/dashboard/adoptRequest' />}>
+                        Adoption Request
+                    </MenuItem>
+                    <MenuItem component={<NavLink to='/dashboard/createDonationCamp' />}>
+                        Create Donation Campaign
+                    </MenuItem>
+                    <MenuItem component={<NavLink to='/dashboard/myDonationCamp' />}>
+                        My Donation Campaigns
+                    </MenuItem>
+                    <MenuItem component={<NavLink to='/dashboard/myDonation' />}>
+                        My Donations
+                    </MenuItem>
+
+                </>
+
+        }
+
 
     </>
 

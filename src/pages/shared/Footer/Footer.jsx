@@ -1,5 +1,7 @@
 import Container from "../../../components/Container/Container";
 import bgImg from '../../../../public/images/testimonial_bg.jpg'
+import { Link } from "react-router-dom";
+import logo from '/images/logo.png'
 
 const Footer = () => {
     return (
@@ -9,10 +11,13 @@ const Footer = () => {
             <Container>
                 <div>
                     <div className="sm:flex sm:items-center sm:justify-between">
-                        <a href="https://flowbite.com/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
-                            <img src="https://flowbite.com/docs/images/logo.svg" className="h-8" alt="Flowbite Logo" />
-                            <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">Flowbite</span>
-                        </a>
+                        <Link to='/'>
+                            <div className='flex gap-1 items-center'>
+                                <img src={logo} className='max-h-10' alt="" />
+                                <span className="self-center  font-extrabold font-title text-white text-base sm:text-2xl">
+                                    Pet Adoption</span>
+                            </div>
+                        </Link>
                         <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-white sm:mb-0">
                             <li>
                                 <a href="#" className="hover:underline me-4 md:me-6">About</a>

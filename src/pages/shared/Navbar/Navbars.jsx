@@ -1,18 +1,20 @@
 
-import { signOut } from 'firebase/auth';
 import Container from '../../../components/Container/Container';
 import useAuth from '../../../hooks/useAuth';
 import Theme from '../../../theme/Theme';
 import headerBg from '/images/header_shape.png'
 import { Link, NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useEffect } from 'react';
 import { Avatar, Dropdown } from 'flowbite-react';
-import { HiCog, HiCurrencyDollar, HiLogout, HiViewGrid } from 'react-icons/hi';
+import { HiLogout, HiViewGrid } from 'react-icons/hi';
+import useAdmin from '../../../hooks/useAdmin';
+
+import logo from '../../../../public/images/logo.png'
 
 const Navbars = () => {
 
-    const { user, isLoading, logOut } = useAuth()
+    const { user, isLoading, logOut } = useAuth();
+    const [isAdmin] = useAdmin()
 
     const navLinks = <>
 
@@ -29,9 +31,21 @@ const Navbars = () => {
         <li>
             <NavLink to='/about'>About Us</NavLink>
         </li>
-        <li>
-            <NavLink to='/contact'>Contact</NavLink>
-        </li>
+        {
+            <>
+                {
+                    user && !isAdmin && <li>
+                        <NavLink to='/dashboard/userHome'>Dashboard</NavLink>
+                    </li>
+                }
+                {
+                    user && isAdmin && <li>
+                        <NavLink to='/dashboard/adminHome'>Dashboard</NavLink>
+                    </li>
+                }
+
+            </>
+        }
 
     </>
 
@@ -58,46 +72,62 @@ const Navbars = () => {
                 <nav className="bg-[#fff] overflow-hidden pt-6 pb-4">
                     <Container>
                         <div className="flex flex-wrap items-center justify-between">
-                            <a href="https://flowbite.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
-                                <img src="https://flowbite.com/docs/images/logo.svg" className="h-8" alt="Flowbite Logo" />
-                                <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
-                            </a>
+
+
+                            <Link to='/'>
+                                <div className='flex gap-1 items-center'>
+                                    <img src={logo} className='max-h-10' alt="" />
+                                    <span className="self-center  font-extrabold font-title text-title-secondary text-base sm:text-2xl">
+                                        Pet Adoption</span>
+                                </div>
+                            </Link>
+
                             <div className="flex items-center gap-2 lg:order-2 md:space-x-0 rtl:space-x-reverse">
 
                                 {
-                                    isLoading == false ?
-                                        user ?
-                                            <Dropdown
-                                                arrowIcon={false}
-                                                inline
-                                                label={
-                                                    <Avatar alt="User settings" img={user?.photoURL} rounded />
-                                                }
+
+                                    user ?
+                                        <Dropdown
+                                            arrowIcon={false}
+                                            inline
+                                            label={
+                                                <Avatar alt="User settings" img={user?.photoURL} rounded />
+                                            }
+                                        >
+                                            <Dropdown.Header className='text-center'>
+                                                <span className="block text-base text-title-primary font-bold font-title capitalize">{user?.displayName}</span>
+                                                <span className="block text-sm  text-gray-600 truncate dark:text-gray-400">{user?.email}</span>
+                                            </Dropdown.Header>
+
+
+                                            <Dropdown.Item icon={HiViewGrid}>
+                                                <>
+                                                    {
+                                                        user && !isAdmin && <li>
+                                                            <NavLink to='/dashboard/userHome'>Dashboard</NavLink>
+                                                        </li>
+                                                    }
+                                                    {
+                                                        user && isAdmin && <li>
+                                                            <NavLink to='/dashboard/adminHome'>Dashboard</NavLink>
+                                                        </li>
+                                                    }
+
+                                                </>
+                                            </Dropdown.Item>
+
+
+                                            <Dropdown.Item
+                                                onClick={handleSignOut}
+                                                icon={HiLogout}
                                             >
-                                                <Dropdown.Header className='text-center'>
-                                                    <span className="block text-base text-title-primary font-bold font-title capitalize">{user?.displayName}</span>
-                                                    <span className="block text-sm  text-gray-600 truncate dark:text-gray-400">{user?.email}</span>
-                                                </Dropdown.Header>
-
-                                                <Link to='/dashboard'>
-                                                    <Dropdown.Item icon={HiViewGrid}>
-                                                        Dashboard
-                                                    </Dropdown.Item>
-                                                </Link>
-
-                                                <Dropdown.Item
-                                                    onClick={handleSignOut}
-                                                    icon={HiLogout}
-                                                >
-                                                    Sign out
-                                                </Dropdown.Item>
-                                            </Dropdown>
-                                            :
-                                            <Link to='/login'>
-                                                <button className="sign-in-btn text-white bg-secondary-bg font-title hover:bg-primary-bg focus:shadow-none font-medium rounded text-base px-3 py-1.5 focus:outline-none dark:focus:ring-blue-800 flex items-center gap-2">Sign in </button>
-                                            </Link>
+                                                Sign out
+                                            </Dropdown.Item>
+                                        </Dropdown>
                                         :
-                                        ''
+                                        <Link to='/login'>
+                                            <button className="sign-in-btn text-white bg-secondary-bg font-title hover:bg-primary-bg focus:shadow-none font-medium rounded text-base px-3 py-1.5 focus:outline-none dark:focus:ring-blue-800 flex items-center gap-2">Sign in </button>
+                                        </Link>
                                 }
 
 

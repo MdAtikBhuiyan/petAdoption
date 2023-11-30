@@ -1,70 +1,64 @@
-import { useEffect, useState } from "react";
 import SectionTitle from "../../../../components/sectionTitle/sectionTitle";
 
-import Select from 'react-select'
 import { useFormik } from "formik";
 
 import * as Yup from 'yup';
 import Swal from "sweetalert2";
-import useAuth from "../../../../hooks/useAuth";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { useState } from "react";
 import useAxiosSecure from "../../../../hooks/useAxiosSecure";
+
 
 const formValidationSchema = Yup.object().shape({
     petName: Yup.string().required("Pet Name is Required"),
-    petAge: Yup.string().required("Pet Age is Required"),
-    petCategory: Yup.object().required("Pet Category is Required"),
-    petLocation: Yup.string().required("Location is Required"),
-    petShortDes: Yup.string().required("Short description is Required"),
-    petLongDes: Yup.string().required("Long description is Required"),
-    petImg: Yup.string().required("Pet image is Required"),
+    maxDonation: Yup.string().required("this is Required"),
+    lastDate: Yup.string().required("this is Required"),
+    dCampShortDes: Yup.string().required("Short description is Required"),
+    dCampLongDes: Yup.string().required("Long description is Required"),
+    dCampImg: Yup.string().required("Pet image is Required"),
 });
 
 
-// const cloudinary_api = 'https://api.cloudinary.com/v1_1/df0nnfc5b';
 const cloudinary_api = 'https://api.cloudinary.com/v1_1/df0nnfc5b/image/upload'
 const upload_preset_name = 'rp3ewx6o'
 
-const AddPets = () => {
+const UpdateDonationCampaign = () => {
+
+
+    const { state } = useLocation()
+    const [campDetails, setCampDetils] = useState(state?.signleCamp || {})
+    useEffect(() => {
+        setCampDetils(state?.signleCamp)
+    }, [state])
+
+    // console.log(campDetails);
 
     const axiosSecure = useAxiosSecure()
-    const { user } = useAuth()
-
-    const options = [
-        { value: 'dog', label: 'Dog' },
-        { value: 'cat', label: 'Cat' },
-        { value: 'rabbit', label: 'Rabbit' },
-        { value: 'bird', label: 'Bird' },
-        { value: 'fish', label: 'Fish' },
-    ];
-
-    const [selectedOption, setSelectedOption] = useState(null);
-
-
 
     const { values, handleChange, handleSubmit, errors } = useFormik({
         initialValues: {
-            petName: '',
-            petAge: '',
-            petCategory: '',
-            petLocation: '',
-            petShortDes: '',
-            petLongDes: '',
-            petImg: '',
-
+            petName: campDetails?.petName,
+            maxDonation: campDetails?.maxDonation,
+            lastDate: campDetails?.lastDate,
+            dCampShortDes: campDetails?.dCampShortDes,
+            dCampLongDes: campDetails?.dCampLongDes,
+            dCampImg: campDetails?.dCampImg,
         },
 
         validationSchema: formValidationSchema,
 
         onSubmit: (values, { resetForm }) => {
-            // console.log(values);
+            console.log('main', values);
             // image hosting
             const formData = new FormData();
-            formData.append('file', values?.petImg);
+            formData.append('file', values?.dCampImg);
             formData.append('upload_preset', upload_preset_name);
 
-            let addPetInfo = { ...values, adoptStatus: false, ownerEmail: user?.email }
+            let addDonationInfo = { ...values, pauseStatus: campDetails?.pauseStatus || false }
             let photoURl = null;
-            if (values) {
+            if (values.dCampImg) {
+
                 fetch(cloudinary_api, {
                     method: 'POST',
                     body: formData,
@@ -76,17 +70,19 @@ const AddPets = () => {
                         photoURl = data.url;
 
                         if (photoURl) {
-                            addPetInfo.petImg = photoURl;
-                            axiosSecure.post('/allPets', addPetInfo)
+                            addDonationInfo.dCampImg = photoURl;
+                            console.log(addDonationInfo);
+                            axiosSecure.put(`/donationCamps?id=${campDetails?._id}`, addDonationInfo)
                                 .then(res => {
-                                    // console.log(res.data);
+                                    console.log(res.data);
+                                    // clear form fields
                                     resetForm();
 
-                                    if (res.data?.insertedId) {
+                                    if (res.data?.modifiedCount > 0) {
                                         Swal.fire({
                                             icon: "success",
-                                            title: "Pet added!",
-                                            text: `Pet successfully add to the database`,
+                                            title: "Update Donation Campaign",
+                                            text: `Donation Campaign successfully update to the database`,
                                             // timer: 2000
                                         });
                                     }
@@ -96,54 +92,18 @@ const AddPets = () => {
 
                     })
                     .catch(err => console.error(err));
-
             }
 
-            // // console.log("response", res.data);
-            // alert(JSON.stringify(addPetInfo, null, 2));
         },
 
     });
 
 
-    console.log(errors);
-    // console.log(values);
-
-
-
-
-
-    // useEffect(() => {
-    //     const formData = new FormData();
-    //     formData.append('file', values?.petImg);
-    //     formData.append('upload_preset', upload_preset_name);
-
-    //     if (values?.petImg) {
-    //         formData.append('file', values?.petImg);
-    //         formData.append('upload_preset', upload_preset_name);
-
-    //         fetch(cloudinary_api, {
-    //             method: 'POST',
-    //             body: formData,
-    //         })
-    //             .then(response => response.json())
-    //             .then((data) => {
-    //                 console.log(data);
-    //                 if (data.secure_url !== '') {
-    //                     const uploadedFileUrl = data.secure_url;
-    //                     localStorage.setItem('passportUrl', uploadedFileUrl);
-    //                 }
-    //             })
-    //             .catch(err => console.error(err));
-    //     }
-    // }, [values?.petImg])
-
-    // console.log(new Date("<YYYY-mm-ddTHH:MM:ssZ>"));
-
     return (
         <div>
+
             <div className="text-center">
-                <SectionTitle subHeading={'add'} heading={"Add your Pet"} darkMode={true} />
+                <SectionTitle subHeading={'Update'} heading={"Update donation camp"} darkMode={true} />
             </div>
 
             <form onSubmit={handleSubmit} className="my-12">
@@ -161,12 +121,11 @@ const AddPets = () => {
                             <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or JPEG </p>
                         </div>
                         <input
-                            defaultValue={values.petImg}
-                            id='petImg'
-                            name="petImg"
+                            id='dCampImg'
+                            name="dCampImg"
                             onChange={(event) => {
                                 // let file = event.currentTarget.files[0]
-                                let file = { target: { name: 'petImg', value: event?.currentTarget?.files[0] } }
+                                let file = { target: { name: 'dCampImg', value: event?.currentTarget?.files[0] } }
                                 console.log(file);
                                 handleChange(file)
                             }}
@@ -174,7 +133,7 @@ const AddPets = () => {
 
                             type="file" className="max-w-[220px] pb-2" />
                     </label>
-                    {errors?.petImg && <div className="text-red-600">{errors.petImg}</div>}
+                    {errors?.dCampImg && <div className="text-red-600">{errors.dCampImg}</div>}
                 </div>
                 <div className="grid grid-cols-1 gap-8 mt-6 sm:grid-cols-2">
                     <div>
@@ -188,92 +147,73 @@ const AddPets = () => {
                             name="petName"
                             type="text"
                             // defaultValue={updateProduct?.name}
-                            placeholder="Pet Name"
+                            placeholder="Enter max donation amount"
                             className="w-full py-2 px-4 text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-transparent focus:outline-0 focus:shadow-none rounded"
                         />
                         {errors?.petName && <div className="text-red-600">{errors.petName}</div>}
                     </div>
                     <div>
                         <label className="text-title-optioanl text-sm font-bold">
-                            Pet Age:
+                            Maximum Donation:
                         </label>
                         <input
                             onChange={handleChange}
-                            value={values.petAge}
-                            id='petAge'
-                            name="petAge"
+                            value={values.maxDonation}
+                            id='maxDonation'
+                            name="maxDonation"
                             type="number"
+                            // defaultValue={updateProduct?.name}
+                            placeholder="Enter max donation amount"
+                            className="w-full py-2 px-4 text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-transparent focus:outline-0 focus:shadow-none rounded"
+                        />
+                        {errors?.maxDonation && <div className="text-red-600">{errors.maxDonation}</div>}
+                    </div>
+                    <div>
+                        <label className="text-title-optioanl text-sm font-bold">
+                            Last Date:
+                        </label>
+                        <input
+                            onChange={handleChange}
+                            value={values.lastDate}
+                            id='lastDate'
+                            name="lastDate"
+                            type="date"
                             // defaultValue={updateProduct?.quantity}
                             placeholder="Pet Age"
                             className="w-full py-2 px-4 text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-transparent focus:outline-0 focus:shadow-none rounded"
                         />
-                        {errors?.petAge && <div className="text-red-600">{errors.petAge}</div>}
-                    </div>
-                    <div>
-                        <label className="text-title-optioanl text-sm font-bold">
-                            Category:
-                        </label>
-                        <Select
-                            id='petCategory'
-                            name="petCategory"
-                            value={values.petCategory}
-                            defaultValue={selectedOption}
-                            isClearable={true}
-                            isSearchable={false}
-                            onChange={selectedOption => {
-                                let event = { target: { name: 'petCategory', value: selectedOption } }
-                                handleChange(event)
-                            }}
-                            options={options}
-                        />
-                        {errors?.petCategory && <div className="text-red-600">{errors.petCategory}</div>}
-                    </div>
-                    <div>
-                        <label className="text-title-optioanl text-sm font-bold">
-                            Location:
-                        </label>
-                        <input
-                            id='petLocation'
-                            name="petLocation"
-                            onChange={handleChange}
-                            value={values.petLocation}
-                            type="text"
-                            // defaultValue={updateProduct?.author}
-                            placeholder="location"
-                            className="w-full py-2 px-4 text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-transparent focus:outline-0 focus:shadow-none rounded"
-                        />
-                        {errors?.petLocation && <div className="text-red-600">{errors.petLocation}</div>}
+                        {errors?.lastDate && <div className="text-red-600">{errors.lastDate}</div>}
                     </div>
                     <div>
                         <label className="text-title-optioanl text-sm font-bold">
                             Short Description:
                         </label>
                         <input
-                            id='petShortDes'
-                            name="petShortDes"
+                            id='dCampShortDes'
+                            name="dCampShortDes"
                             onChange={handleChange}
-                            value={values.petShortDes}
+                            value={values.dCampShortDes}
                             type="text"
                             // defaultValue={updateProduct?.author}
                             placeholder="Short description"
                             className="w-full py-2 px-4 text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-transparent focus:outline-0 focus:shadow-none rounded"
                         />
-                        {errors?.petShortDes && <div className="text-red-600">{errors.petShortDes}</div>}
+                        {errors?.dCampShortDes && <div className="text-red-600">{errors.dCampShortDes}</div>}
                     </div>
                     <div>
                         <label className="text-title-optioanl text-sm font-bold">
                             Long Description:
                         </label>
                         <input
-                            id='petLongDes'
-                            name="petLongDes"
+                            id='dCampLongDes'
+                            name="dCampLongDes"
                             onChange={handleChange}
-                            value={values.petLongDes} type="text"
-                            // defaultValue={updateProduct?.author}
+                            value={values.dCampLongDes}
+                            type="text"
                             placeholder=" Long description"
                             className="w-full py-2 px-4 text-sm text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-transparent focus:outline-0 focus:shadow-none rounded"
                         />
-                        {errors?.petLongDes && <div className="text-red-600">{errors.petLongDes}</div>}
+                        {errors?.dCampLongDes && <div className="text-red-600">{errors.dCampLongDes}</div>}
                     </div>
 
                 </div>
@@ -285,38 +225,8 @@ const AddPets = () => {
 
             </form>
 
-            {/* <form onSubmit={handleSubmit}>
-                <label htmlFor="firstName">First Name</label>
-                <input
-                    id="firstName"
-                    name="firstName"
-                    type="text"
-
-                    onChange={handleChange}
-                    value={values.firstName}
-                />
-                <label htmlFor="lastName">Last Name</label>
-                <input
-                    id="lastName"
-                    // name="lastName"
-                    type="text"
-                    defaultValue={'a'}
-                    onChange={handleChange}
-                    value={values.lastName}
-                />
-                <label htmlFor="email">Email Address</label>
-                <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    onChange={handleChange}
-                    value={values.email}
-                />
-
-                <button type="submit">Submit</button>
-            </form> */}
         </div>
     );
 };
 
-export default AddPets;
+export default UpdateDonationCampaign;

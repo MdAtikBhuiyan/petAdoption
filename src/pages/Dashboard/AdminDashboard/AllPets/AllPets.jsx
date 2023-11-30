@@ -1,71 +1,34 @@
-import { useQuery } from "@tanstack/react-query";
 import SectionTitle from "../../../../components/sectionTitle/sectionTitle";
-import {
-    createColumnHelper,
-    flexRender,
-    getCoreRowModel,
-    useReactTable,
-} from '@tanstack/react-table'
-import TableCard from "./TableCard";
 import useAllPet from "../../../../hooks/useAllPet";
+import useAxiosPublic from "../../../../hooks/useAxiosPublic";
+import TableCard from "../../UserDashboard/MyAddedPet/TableCard";
 
 
+const AllPets = () => {
 
 
-// const columnHelper = createColumnHelper()
-const columnHelper = createColumnHelper()
-
-const columns = [
-    columnHelper.accessor('id', {
-        cell: info => info.getValue(),
-    }),
-
-    // you can use different aproach here
-    columnHelper.accessor(row => row.petName, {
-        id: 'petName',
-        cell: info => <i>{info.getValue()}</i>,
-        header: () => <span>Pet Name</span>,
-    }),
-    columnHelper.accessor('petAge', {
-        cell: info => info.getValue(),
-    }),
-    columnHelper.accessor('petCategory', {
-        cell: info => info.getValue().value,
-    }),
-    columnHelper.accessor('petImg', {
-        cell: info => console.log(info.getValue().url),
-    }),
-    columnHelper.accessor('adoptStatus', {
-        cell: info => console.log(info.renderValue()),
-    }),
-    columnHelper.accessor('PetName', {
-        header: () => 'test',
-        cell: info => info.renderValue(),
-    })
-]
+    const axiosPublic = useAxiosPublic()
 
 
-
-const MyAddedPet = () => {
-
-
+    // const { data = [], error, isPending: isLoading, refetch } = useQuery({
+    //     queryKey: ['a'],
+    //     queryFn: async () => {
+    //         const res = await axiosPublic.get('/allPets')
+    //         return res.data;
+    //     }
+    // })
 
     const [allPets, refetch] = useAllPet()
 
     console.log(allPets);
 
-    const table = useReactTable({
-        allPets,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-    })
-
 
 
     return (
         <div>
+
             <div className="text-center">
-                <SectionTitle subHeading={'My Pets'} heading={"All Added Pets"} darkMode={true} />
+                <SectionTitle subHeading={'Pets'} heading={"All Pets"} darkMode={true} />
             </div>
 
 
@@ -109,4 +72,4 @@ const MyAddedPet = () => {
     );
 };
 
-export default MyAddedPet;
+export default AllPets;

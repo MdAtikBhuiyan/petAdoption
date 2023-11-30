@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+
 import SectionTitle from "../../../../components/sectionTitle/sectionTitle";
 
 import Select from 'react-select'
@@ -6,7 +6,9 @@ import { useFormik } from "formik";
 
 import * as Yup from 'yup';
 import Swal from "sweetalert2";
-import useAuth from "../../../../hooks/useAuth";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
 import useAxiosSecure from "../../../../hooks/useAxiosSecure";
 
 const formValidationSchema = Yup.object().shape({
@@ -20,14 +22,20 @@ const formValidationSchema = Yup.object().shape({
 });
 
 
-// const cloudinary_api = 'https://api.cloudinary.com/v1_1/df0nnfc5b';
 const cloudinary_api = 'https://api.cloudinary.com/v1_1/df0nnfc5b/image/upload'
 const upload_preset_name = 'rp3ewx6o'
 
-const AddPets = () => {
+const UpdatePets = () => {
+
+    const { state } = useLocation()
+    const [petDetails, setPetDetils] = useState(state?.signlePet || {})
+    useEffect(() => {
+        setPetDetils(state?.signlePet)
+    }, [state?.signlePet])
+
+    console.log(petDetails);
 
     const axiosSecure = useAxiosSecure()
-    const { user } = useAuth()
 
     const options = [
         { value: 'dog', label: 'Dog' },
@@ -39,32 +47,30 @@ const AddPets = () => {
 
     const [selectedOption, setSelectedOption] = useState(null);
 
-
-
     const { values, handleChange, handleSubmit, errors } = useFormik({
         initialValues: {
-            petName: '',
-            petAge: '',
-            petCategory: '',
-            petLocation: '',
-            petShortDes: '',
-            petLongDes: '',
-            petImg: '',
-
+            petName: petDetails?.petName,
+            petAge: petDetails?.petAge,
+            petCategory: petDetails?.petCategory,
+            petLocation: petDetails?.petLocation,
+            petShortDes: petDetails?.petShortDes,
+            petLongDes: petDetails?.petLongDes,
+            petImg: petDetails?.petImg,
         },
 
         validationSchema: formValidationSchema,
 
         onSubmit: (values, { resetForm }) => {
-            // console.log(values);
+            console.log(values);
             // image hosting
             const formData = new FormData();
             formData.append('file', values?.petImg);
             formData.append('upload_preset', upload_preset_name);
 
-            let addPetInfo = { ...values, adoptStatus: false, ownerEmail: user?.email }
+            let addPetInfo = { ...values, adoptStatus: petDetails?.adoptStatus || false }
             let photoURl = null;
-            if (values) {
+            if (values.petImg) {
+
                 fetch(cloudinary_api, {
                     method: 'POST',
                     body: formData,
@@ -77,16 +83,16 @@ const AddPets = () => {
 
                         if (photoURl) {
                             addPetInfo.petImg = photoURl;
-                            axiosSecure.post('/allPets', addPetInfo)
+                            axiosSecure.put(`/allPets?id=${petDetails?._id}`, addPetInfo)
                                 .then(res => {
-                                    // console.log(res.data);
+                                    console.log(res.data);
                                     resetForm();
 
-                                    if (res.data?.insertedId) {
+                                    if (res.data.modifiedCount > 0) {
                                         Swal.fire({
                                             icon: "success",
-                                            title: "Pet added!",
-                                            text: `Pet successfully add to the database`,
+                                            title: "Pet Updated!",
+                                            text: `Pet successfully Updated to the database`,
                                             // timer: 2000
                                         });
                                     }
@@ -98,22 +104,27 @@ const AddPets = () => {
                     .catch(err => console.error(err));
 
             }
+            // axiosSecure.post('/allPets', addPetInfo)
+            //     .then(res => {
+            //         // console.log(res.data);
+            //         resetForm();
 
-            // // console.log("response", res.data);
-            // alert(JSON.stringify(addPetInfo, null, 2));
+            //         if (res.data?.insertedId) {
+            //             Swal.fire({
+            //                 icon: "success",
+            //                 title: "Pet added!",
+            //                 text: `Pet successfully add to the database`,
+            //                 // timer: 2000
+            //             });
+            //         }
+            //     })
+
         },
 
     });
 
 
-    console.log(errors);
-    // console.log(values);
 
-
-
-
-
-    // useEffect(() => {
     //     const formData = new FormData();
     //     formData.append('file', values?.petImg);
     //     formData.append('upload_preset', upload_preset_name);
@@ -143,7 +154,7 @@ const AddPets = () => {
     return (
         <div>
             <div className="text-center">
-                <SectionTitle subHeading={'add'} heading={"Add your Pet"} darkMode={true} />
+                <SectionTitle subHeading={'Update'} heading={"Update your Pet"} darkMode={true} />
             </div>
 
             <form onSubmit={handleSubmit} className="my-12">
@@ -161,7 +172,6 @@ const AddPets = () => {
                             <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or JPEG </p>
                         </div>
                         <input
-                            defaultValue={values.petImg}
                             id='petImg'
                             name="petImg"
                             onChange={(event) => {
@@ -319,4 +329,4 @@ const AddPets = () => {
     );
 };
 
-export default AddPets;
+export default UpdatePets;
