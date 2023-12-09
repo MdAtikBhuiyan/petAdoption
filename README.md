@@ -7,6 +7,8 @@
 
 https://asn-pet-adoption-12.web.app/
 
+## Server side code Link
+https://github.com/MdAtikBhuiyan/petAdoption-sever
 
 ## Key Features:
 
@@ -19,3 +21,13 @@ https://asn-pet-adoption-12.web.app/
 - user can see thir pet deatils, campaign details 
 - User can also login by using google, github, and email, password.
 - there has some validation of password for more
+
+
+## Technology Used:
+- Firebase authentication
+- React JS
+- TanStack Query
+- Node JS
+- Express JS
+- Mongo DB
+- Tailwind
