@@ -36,6 +36,11 @@ const Login = () => {
                 });
                 navigate(path, { replace: true })
             })
+            .catch(err => {
+                toast.error(`Oppss...${err.message}`, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            })
 
     }
 

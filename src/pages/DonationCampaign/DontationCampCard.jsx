@@ -7,7 +7,7 @@ const DontationCampCard = ({ camp }) => {
     return (
         <div className="max-w-lg rounded-xl shadow-md shadow-slate-300">
 
-            <img className="rounded-xl h-[300px] object-contain w-full pt-2" src={dCampImg} alt="" />
+            <img className="rounded-xl h-[300px] object-fill w-full pt-2" src={dCampImg} alt="" />
 
             <div className="p-5">
                 <a href="#">

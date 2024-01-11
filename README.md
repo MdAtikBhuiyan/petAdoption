@@ -10,6 +10,10 @@ https://asn-pet-adoption-12.web.app/
 ## Server side code Link
 https://github.com/MdAtikBhuiyan/petAdoption-sever
 
+## Admin Credential
+Email: admin@gmail.com
+Password: 123456@Aa
+
 ## Key Features:
 
 - Pet Adoption is a library management based website

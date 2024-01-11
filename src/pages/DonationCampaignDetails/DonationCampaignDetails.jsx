@@ -44,7 +44,7 @@ const DonationCampaignDetails = () => {
             <div className="bg-slate-100 rounded-xl shadow-xl max-w-6xl mx-auto p-10 flex flex-col md:flex-row gap-4 flex-wrap justify-center">
 
                 <div className="w-full flex flex-col gap-6">
-                    <img src={dCampImg} className="max-h-[350px] object-fill rounded-lg" alt="" />
+                    <img src={dCampImg} className="max-h-[350px] object-cover rounded-lg" alt="" />
                     <div className="md:px-8">
                         <div className="flex flex-col md:flex-row gap-8">
                             <div className="md:w-1/2">

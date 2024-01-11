@@ -9,7 +9,7 @@ import pawImg from '../../../../public/images/pawprint.png'
 
 const AboutUs = () => {
     return (
-        <div className='mt-16'>
+        <div className='my-16'>
             <Container>
                 <div className='flex flex-col md:flex-row gap-4 justify-center items-center'>
                     <div className="md:w-1/2 mx-auto">
