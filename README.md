@@ -10,8 +10,8 @@ https://asn-pet-adoption-12.web.app/
 ## Server side code Link
 https://github.com/MdAtikBhuiyan/petAdoption-sever
 
-## Admin Credential
-Email: admin@gmail.com
+## Admin Login Credential
+Email: admin@gmail.com <br />
 Password: 123456@Aa
 
 ## Key Features:
